@@ -3,9 +3,13 @@
 что приводит к ошибке), допилить нужно врем€
 ѕри запуске выводит дерево каталога пользовател€
  оманды:
+выход: exit
+педжинг: pg, чтоб листать страницы: стрелки влево\вправо, чтоб выйти из редима пейджинга: Q
 сменить директорию: cd УC:\sdfsdf\sdfsdfds\sdfsdfsdf\sdfsdfdsФ
 копировать файл: cp УC:\sdfsdf\sdfsdfds\dfdf.txtФ УC:\sdfsdf\sdfsdfds\dfdf.txtФ
 копировать папку: cp УC:\sdfsdf\sdfsdfdsФ УC:\sdfsdf\sdfsdfdsФ
 удалить файл: dl УC:\sdfsdf\sdfsdfds\dfdf.txtФ
 удалить папку: dl УC:\sdfsdf\sdfsdfdsФ
+инфа о файле: inm УC:\sdfsdf\sdfsdfds\dfdf.txtФ
+инфа о папке: inm УC:\sdfsdf\sdfsdfds
 
