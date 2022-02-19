@@ -12,7 +12,6 @@ namespace FilesManager
             Configuration roaming = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.PerUserRoaming);
             var fileMap = new ExeConfigurationFileMap { ExeConfigFilename = roaming.FilePath };
             Configuration config = ConfigurationManager.OpenMappedExeConfiguration(fileMap, ConfigurationUserLevel.None);
-            config.AppSettings.Settings.Clear();
             string curPath = null;
             if (config.AppSettings.Settings.Count == 0)
             {
@@ -34,7 +33,20 @@ namespace FilesManager
                 var command = tuple.Item1;
                 switch (command)
                 {
-                    case "exit":                       
+                    case "exit":
+                        try
+                        {
+                            if (config.AppSettings.Settings.Count == 0)
+                                config.AppSettings.Settings.Add("CurrentPath", curPath);
+                            else
+                                config.AppSettings.Settings["CurrentPath"].Value = curPath;
+                        }
+                        catch (ConfigurationErrorsException)
+                        {
+                            Console.WriteLine("Ошибка чтения файла конфигурации приложения");
+                        }
+                        config.Save(ConfigurationSaveMode.Modified);
+                        ConfigurationManager.RefreshSection(config.AppSettings.SectionInformation.Name);
                         exit = true; 
                         break;
                     case "pg":
@@ -53,12 +65,11 @@ namespace FilesManager
 
                         }
                         break;
-                    case "cd":
-                        string newPath = null;               
-                        ChangeDir(ref newPath, userInput, ref config);
+                    case "cd":               
+                        ChangeDir(ref curPath, userInput);
                         Console.Clear();
                         result.Clear();
-                        ShowFilesAndDirsTree(newPath, treeLevel, ref result);
+                        ShowFilesAndDirsTree(curPath, treeLevel, ref result);
                         PrintPage(result, 1);
                         break;
                     case "cp":
@@ -196,7 +207,7 @@ namespace FilesManager
                 }
             }
         }
-        static void ChangeDir (ref string newPath, string usersInput, ref Configuration config)
+        static void ChangeDir (ref string newPath, string usersInput)
         {
             var usrCmd = usersInput.Split('"');
             if (usrCmd.Length != 3)
@@ -209,15 +220,7 @@ namespace FilesManager
             if (!Directory.Exists(destPath))
                 Console.WriteLine("Данной директории не существует");
             else
-            {
                 newPath = destPath;
-                config.AppSettings.Settings.Clear();
-                config.AppSettings.Settings.Add("CurrentPath", newPath);
-                config.Save(ConfigurationSaveMode.Modified);
-                ConfigurationManager.RefreshSection(config.AppSettings.SectionInformation.Name);
-            }
-                
-        
         }
         static void CopyFile(string sourceFileName, string destFileName)
         {
